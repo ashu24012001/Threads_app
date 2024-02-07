@@ -38,6 +38,7 @@ function LeftSidebar() {
                         max-lg:hidden">{link.label}</p>
                     </Link>
                 )})}  
+            </div>
                 <div className='mt-10 px-6'>
                 <SignedIn>
                         <SignOutButton signOutCallback={() => router.push('/sign-in')}>
@@ -48,7 +49,6 @@ function LeftSidebar() {
                         </SignOutButton>
                     </SignedIn>
                 </div>              
-            </div>
         </section>
     )
 }

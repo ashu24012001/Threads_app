@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -16,25 +15,18 @@ import { Textarea } from "@/components/ui/textarea"
 import {zodResolver} from "@hookform/resolvers/zod";
 import { usePathname, useRouter } from "next/navigation";
 
-import { updateUser } from "@/lib/actions/user.actions";
 import { ThreadValidation } from "@/lib/validations/thread";
 import { createThread } from "@/lib/actions/thread.actions";
+import { useOrganization } from "@clerk/nextjs";
 
 interface Props {
-    user: {
-        id: string;
-        objectId: string;
-        username: string;
-        name: string;
-        bio: string;
-        image: string;
-    };
-    btnTitle: string;    
+    userId: string;
 }
 
-function PostThread({userId}:{userId: string}) {
+function PostThread({userId}: Props) {
     const router = useRouter();
     const pathname = usePathname();
+    const {organization}=useOrganization();
 
     const form=useForm({
         resolver: zodResolver(ThreadValidation),
@@ -46,11 +38,11 @@ function PostThread({userId}:{userId: string}) {
 
     const onSubmit = async (values: z.infer<typeof ThreadValidation>) => {
         await createThread({
-        text: values.thread,
-        author: userId, 
-        communityId: null, 
-        path:pathname
-        })
+            text: values.thread,
+            author: userId, 
+            communityId: organization ? organization.id : null, 
+            path:pathname
+        });            
         router.push("/");
     }
 
